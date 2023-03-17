@@ -1,0 +1,36 @@
+
+###
+post http://localhost:3000/api/users
+Content-Type: application/json
+x-auth: 12345
+
+{
+    "username":"ca4",
+    "email":"ac2@example",
+    "password":"sdfdds"
+}
+
+###
+put http://localhost:3000/api/users/D5leR3IuC97wEvaapeKj6
+Content-Type: application/json
+
+{
+    "id": "sdfsfd",
+    "username":"b3ac",
+    "email":"b3ac@example",
+    "password":"123213"
+}
+
+###
+
+get http://localhost:3000/api/users
+
+###
+get http://localhost:3000/api/users?username=a&email=a
+
+
+###
+get http://localhost:3000/api/users/D5leR3IuC97wEvaapeKj6
+
+###
+delete http://localhost:3000/api/users/kV6O4jW9a-PZyfZFRBzLF

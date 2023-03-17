@@ -1,0 +1,20 @@
+@host = http://localhost:3000
+
+###
+get http://localhost:3000
+
+###
+get {{host}}/users
+
+###
+post {{host}}/users
+Content-Type: application/json
+
+{
+    "username":"user2",
+    "email":"sfasd@dsfs",
+    "password":"we34"
+}
+
+###
+get {{host}}/users2
