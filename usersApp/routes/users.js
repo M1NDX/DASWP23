@@ -12,8 +12,9 @@ console.log(nanoid.nanoid());
 router.get('/',validateAdmin,(req,res)=>{
     let isAdmin = req.isAdmin;
     let filtered = [...users]
+    console.log(filtered);
     if(!isAdmin)
-      filtered = filtered.map(usr => ({id: username.id, username: usr.username,email:usr.email}))
+      filtered = filtered.map(usr => ({id: usr.id, username: usr.username,email:usr.email}))
     
     let {username, email} = req.query
     if(username) 
@@ -26,6 +27,8 @@ router.get('/',validateAdmin,(req,res)=>{
     res.send(filtered)
 })
 
+
+
 router.get('/:id', (req,res)=>{
     let user = users.find(usr => usr.id ==req.params.id )
     if(user){
@@ -33,6 +36,12 @@ router.get('/:id', (req,res)=>{
     }else{
         res.status(404).send({error:"no existe usuario"})
     }
+})
+
+
+//NUNCA SERÁ ACCESIBLE porque ya existe un endpoint antes con /:id
+router.get('/:test', (req, res) => {
+    res.send({test: "hola"})
 })
 
 router.put('/:id',authStrict, (req,res)=>{
