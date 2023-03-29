@@ -5,39 +5,152 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
       <h1>Lista de usuarios registrados</h1>
+    
+      <div class="container" id="formulario">
+        <form onsubmit="enviarDatos()">
+          <div class="form-group">
+            <label for="">Nombre</label>
+            <input type="text" class="form-control" name="" id="name" aria-describedby="helpId" placeholder="">
+          </div>
+          <div class="form-group">
+            <label for="">Password</label>
+            <input type="password" class="form-control" name="" id="password" aria-describedby="helpId" placeholder="">
+          </div>
+          <div class="form-group">
+            <label for="">Email</label>
+            <input type="email" class="form-control" name="" id="email" aria-describedby="helpId" placeholder="">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Enviar</button>
+
+        </form>
+      </div>
+
     <div id="listaUsers"></div>
 
     <script>
+      let users = [];
+      let modoInsert = true;
+      let editId= ""
       async function loadUsers(){
-         let data = await fetch("http://localhost:3000/api/users",{
+         let response = await fetch("/api/users",{
           method: "GET",
           headers:{
             "x-auth":"12345"
           }
          })
-         console.log(data);
-         let users = await data.json()
+         console.log(response.status);
+         users = await response.json()
          console.log(users);
+         let listaUsers = document.getElementById("listaUsers")
          listaUsers.innerHTML = users.map(usr=>` 
          <div class="border">
           <p>id: ${usr.id}</p>
           <p>Username: ${usr.username}</p>
           <p>email: ${usr.email}</p>
           ${usr.password? `<p>password: ${usr.password} </p>`:""}
+          <button type="button" class="btn btn-primary" onclick="deleteUser('${usr.id}')" > <i class="fas fa-trash    "></i></button>
+          <button type="button" class="btn btn-primary" onclick="editarUser('${usr.id}')" > <i class="fas fa-edit    "></i></button>
          </div>
          `).join("")
         //  listaUsers.innerText = JSON.stringify(users);
       }
-      loadUsers();
-    </script>
-    
 
+      function editarUser(id){
+        let usuarioEditar = users.find(usr => usr.id === id);
+        modoInsert = false;
+        editId = id
+        document.getElementById("name").value = usuarioEditar.username;
+        document.getElementById( "password").value=usuarioEditar.password;
+        document.getElementById("email").value = usuarioEditar.email;
+      }
+
+      async function deleteUser(id){
+        console.log(id);
+        let response = await fetch("/api/users/"+id,{
+          method: "DELETE",
+          headers:{
+            "x-auth":"12345"
+          }
+         })
+
+         if (response.status==200){
+          let user = await response.json();
+          loadUsers();
+          // alert (JSON.stringify(user))
+         }else{
+          alert("No se encontró")
+         }
+      }
+      loadUsers();
+
+      function changeClass(text, clase){
+        let divsUsuarios = Array.from(document.querySelectorAll("#listaUsers div"))
+        let filtrados = divsUsuarios.filter(d => d.innerText.includes(text))
+        filtrados.forEach(div => div.classList.add(clase))
+        //BUSCAR POR ID 
+        //document.getElementById("aquí el id")
+        //document.querySelectorAll("#")
+        
+        //BUSCAR POR CLASE 
+        //document.getElementsByClassName("aquí la clase")
+        //document.querySelectorAll(".nombre-clase")
+        
+        
+        //BUSCAR POR ETIQUETA O TIPO
+        //document.getElementsByClassName("aquí la clase")
+
+        
+      }
+
+      async function enviarDatos(){
+      
+       event.preventDefault()
+       let username= document.getElementById("name").value;
+       let password =document.getElementById( "password").value;
+       let email= document.getElementById("email").value;
+
+       let newUser = {username, email, password};
+       console.log(newUser)
+       let resp=""
+       if(modoInsert){
+        resp = await fetch("/api/users",{
+         method:"POST",
+         headers:{
+          "content-type": "application/json",
+          "x-auth":"12345"
+         },
+         body: JSON.stringify(newUser)
+       })
+      } else {
+        resp = await fetch("/api/users/"+editId,{
+         method:"PUT",
+         headers:{
+          "content-type": "application/json",
+          "x-auth":"12345"
+         },
+         body: JSON.stringify(newUser)
+       })
+      }
+
+       if(resp.status == 201 || resp.status == 200){
+         alert("Usuario creado")
+         loadUsers();
+       }else{
+        alert("Error, revisa los datos")
+       }
+
+      }
+
+    </script>
+
+    
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

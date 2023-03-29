@@ -5,9 +5,9 @@ Content-Type: application/json
 x-auth: 12345
 
 {
-    "username":"ca4",
-    "email":"ac2@example",
-    "password":"sdfdds"
+    "username":"test43",
+    "email":"acssdfdfsd@example",
+    "password":"sasddfddasdfs"
 }
 
 ###
@@ -15,15 +15,15 @@ put http://localhost:3000/api/users/D5leR3IuC97wEvaapeKj6
 Content-Type: application/json
 
 {
-    "id": "sdfsfd",
-    "username":"b3ac",
-    "email":"b3ac@example",
-    "password":"123213"
+    "id": "23452345",
+    "username":"cdas",
+    "email":"cdas@example",
+    "password":"asdf"
 }
 
 ###
 
-get http://localhost:3000/api/users
+get http://localhost:3001/api/users
 
 ###
 get http://localhost:3000/api/users?username=a&email=a
@@ -34,3 +34,46 @@ get http://localhost:3000/api/users/D5leR3IuC97wEvaapeKj6
 
 ###
 delete http://localhost:3000/api/users/kV6O4jW9a-PZyfZFRBzLF
+
+
+
+
+####
+
+POST http://localhost:3000/api/products/cart
+Content-Type: application/json
+x-user: user4
+
+[
+    {"producto": "sdfasf",
+     "cantidad": 4
+    },
+    {"producto": "sdfsdf443",
+     "cantidad": 3
+    },
+    {"producto": "sdf13sdf34",
+     "cantidad": 1
+    }
+]
+
+####
+
+POST http://localhost:3000/api/products/cart
+Content-Type: application/json
+x-user: user4
+
+{
+    "products":["324534","e565rew","ssdfs"],
+    "cantidades":[4,5,7]
+}
+
+
+///estructura de cart.json
+
+[
+    {
+        "username": "user4",
+        "cart":[]
+    }
+
+]
