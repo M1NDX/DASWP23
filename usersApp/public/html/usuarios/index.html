@@ -35,6 +35,7 @@
     <div id="listaUsers"></div>
 
     <script>
+      
       let users = [];
       let modoInsert = true;
       let editId= ""
@@ -42,6 +43,7 @@
          let response = await fetch("/api/users",{
           method: "GET",
           headers:{
+            "x-expediente": "34545645645",
             "x-auth":"12345"
           }
          })
