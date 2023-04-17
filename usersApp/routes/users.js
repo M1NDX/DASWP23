@@ -1,7 +1,7 @@
 // USERS
 const router = require('express').Router();
 const {authStrict, validateAdmin} = require('../middlewares/auth')
-
+const {User} = require('../db/User.js')
 const users = require('../data/users.json');
 const nanoid = require('nanoid');
 const fs = require('fs');
@@ -9,8 +9,9 @@ const path = require('path')
 
 console.log(nanoid.nanoid());
 
-router.get('/',validateAdmin,(req,res)=>{
+router.get('/',validateAdmin,async (req,res)=>{
     let isAdmin = req.isAdmin;
+    let users  = await User.find({})
     let filtered = [...users]
     console.log(filtered);
     if(!isAdmin)
