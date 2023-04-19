@@ -20,28 +20,16 @@ let userSchema =  mongoose.Schema({
 //User.getUsers({},true)
 userSchema.statics.getUsers =   async (filtros={}, isAdmin=false)=>{
     let projection = {_id:0, username:1, email:1}
+    let skip=0
+    let limit = 1000
+    
     if (isAdmin) projection.password = 1
     let docs = await User.find(filtros, projection)
     console.log(docs);
     return docs;
 }
 
-let User = mongoose.model('user',userSchema)
-
-
-User.getUsers({},true)
-
-async function addUser(newUser){
-    //aquí podemos validar el newUser
-
-    let newUserDB = User(newUser)
-    await newUserDB.save()
-    getUsers()
-}
-
-
-
-async function getUserByEmail(email){
+userSchema.statics.getUserByEmail = async (email)=>{
     let doc = await User.findOne({email},{
         _id:0, email:1, username:1
     })
@@ -49,10 +37,46 @@ async function getUserByEmail(email){
     return doc
 }
 
-async function updateUser(email, userData){
+userSchema.statics.addUser = async (newUser)=>{
+    //aquí podemos validar el newUser
+
+    let newUserDB = User(newUser)
+    await newUserDB.save()
+    return newUserDB;
+
+}
+
+userSchema.statics.updateUser = async (email, userData)=>{
     let newUser = await User.findOneAndUpdate( {email}, {$set: userData}, {new :true})
     console.log(newUser);
+    return newUser;
 }
+
+userSchema.methods.update = async function (userData){
+    let data = await this.updateOne(userData)
+    console.log("update", data);
+    return this
+}
+
+userSchema.statics.deleteUser = async (email)=>{
+    let doc = await User.findOneAndDelete({email})
+    return doc;
+}
+
+
+
+let User = mongoose.model('user',userSchema)
+
+
+User.getUsers({},true)
+
+
+
+
+
+
+
+
 
 // updateUser("test3@test.com", {username:"test33333", password:"54321"})
 // getUserByEmail("test3@test.com")

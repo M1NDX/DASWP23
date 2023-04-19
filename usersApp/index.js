@@ -1,11 +1,11 @@
 const express = require('express');
-const userRoute = require('./routes/users');
+const userRoute = require('./routes/users-route');
 const cors = require('cors');
 const path = require('path');
 const logs = require('./middlewares/log')
 const {log, info} = require('./middlewares/log')
 const app = express();
-const port = 3001;
+const port = 3101;
 
 app.use(logs.log)
 app.use(info)

@@ -11,20 +11,18 @@ x-auth: 12345
 }
 
 ###
-put http://localhost:3000/api/users/D5leR3IuC97wEvaapeKj6
+put http://localhost:3101/api/users/test3@test.com
 Content-Type: application/json
+x-auth: 12345
 
 {
-    "id": "23452345",
-    "username":"cdas",
-    "email":"cdas@example",
-    "password":"asdf"
+    "password":"ddddd"
 }
 
 ###
 
-get http://localhost:3001/api/users
-
+get http://localhost:3101/api/users
+x-auth: 12345
 ###
 get http://localhost:3000/api/users?username=a&email=a
 
@@ -33,8 +31,8 @@ get http://localhost:3000/api/users?username=a&email=a
 get http://localhost:3000/api/users/D5leR3IuC97wEvaapeKj6
 
 ###
-delete http://localhost:3000/api/users/kV6O4jW9a-PZyfZFRBzLF
-
+delete http://localhost:3101/api/users/test3@test.com
+x-auth: 12345
 
 
 

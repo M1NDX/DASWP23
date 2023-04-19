@@ -45,9 +45,13 @@ router.get('/',validateAdmin, async (req,res)=>{
 })
 
 
+//1) convertir la funcion a statics como parte del esquema del usuario
+//2) cambiar a recibir /:email y mandar llamar la función de User.getUserByEmail
+//3) poner el async y await 
 
-router.get('/:id', (req,res)=>{
-    let user = users.find(usr => usr.id ==req.params.id )
+router.get('/:email', async (req,res)=>{
+    // let user = users.find(usr => usr.id ==req.params.id )
+    let user = await User.getUserByEmail(req.params.email)
     if(user){
         res.send(user)
     }else{
@@ -61,24 +65,40 @@ router.get('/:test', (req, res) => {
     res.send({test: "hola"})
 })
 
-router.put('/:id',authStrict, (req,res)=>{
 
-    let user = users.find(usr => usr.id ==req.params.id )
-    if(user){
-        let {username, email, password} = req.body;
-        if(username) user.username = username;
-        if(email) user.email = email;
-        if(password) user.password = password;
-        fs.writeFileSync(path.join('data','users.json'), JSON.stringify(users))
-        res.send(user)
+// 1) funciona de update hacerla statics para el esquema
+// 2) convertir funcion de put en async
+// 3) usar User.updateUser
 
-        // res.send(user)
-    }else{
-        res.status(404).send({error:"no existe usuario"})
+router.put('/:email',authStrict, async(req,res)=>{
+    
+    let userDoc = await User.getUserByEmail(req.params.email)
+
+
+    if(! userDoc) {
+        res.status(404).send({error: 'User not found'})
+        return
     }
+    
+    
+
+    let {username, password} = req.body;
+    let email = req.params.email;
+    let updateUser={}
+    // if(email) updateUser.email = email;
+    if(username) updateUser.username = username;
+    if(password) updateUser.password = password;
+
+    userDoc.update(updateUser)
+        // fs.writeFileSync(path.join('data','users.json'), JSON.stringify(users))
+    let changedUser = await User.updateUser(email, updateUser);
+    
+    res.send(changedUser)
+
 })
 
-router.post('/',authStrict,(req,res)=>{
+
+router.post('/',authStrict,async (req,res)=>{
     //atributos username, email, password
     let {username, email, password} = req.body;
     let errores = []
@@ -92,25 +112,35 @@ router.post('/',authStrict,(req,res)=>{
     }
 
     let newUser = {id: nanoid.nanoid(),username,email,password}
-    console.log(newUser);
-    users.push(newUser);
-    // fs.writeFileSync(path.resolve('./data','users.json'), JSON.stringify(users))
-    fs.writeFileSync(path.join('data','users.json'), JSON.stringify(users))
+    let existeUsuario = await User.getUserByEmail(newUser.email)
 
-    res.status(201).send(newUser)
-
-})
-
-router.delete('/:id',authStrict,(req,res)=>{
-    let pos = users.findIndex(usr=> usr.id == req.params.id)
-    if(pos==-1){
-        res.status(404).send({error: "no se encontró usuario"})
+    if(existeUsuario){
+        res.status(400).send({error: "Usuario ya existe"})
         return;
     }
 
-    let deleted =  users.splice(pos,1)
-    fs.writeFileSync(path.join('data','users.json'), JSON.stringify(users))
-    res.send({info: "usuario "+ deleted[0].username+ " ha sido borrado"})
+    console.log(newUser);
+    let newDoc = await User.addUser(newUser);
+    // users.push(newUser);
+    // fs.writeFileSync(path.resolve('./data','users.json'), JSON.stringify(users))
+    // fs.writeFileSync(path.join('data','users.json'), JSON.stringify(users))
+
+    res.status(201).send(newDoc)
+
+})
+
+router.delete('/:email',authStrict,async(req,res)=>{
+    
+    let userDoc = await User.getUserByEmail(req.params.email)
+    if(!userDoc){
+        res.status(404).send({error: "no se encontró usuario"})
+        return;
+    }
+    let deleted = await User.deleteUser(req.params.email)
+
+    // let deleted =  users.splice(pos,1)
+    // fs.writeFileSync(path.join('data','users.json'), JSON.stringify(users))
+    res.send({info: "usuario "+ deleted.username+ " ha sido borrado"})
 })
 
 
