@@ -9,23 +9,39 @@ const path = require('path')
 
 console.log(nanoid.nanoid());
 
-router.get('/',validateAdmin,async (req,res)=>{
+//con archivo users.json
+// router.get('/',validateAdmin, (req,res)=>{
+//     let isAdmin = req.isAdmin;
+//     let users  = users;
+//     let filtered = [...users]
+//     console.log(filtered);
+//     if(!isAdmin)
+//       filtered = filtered.map(usr => ({id: usr.id, username: usr.username,email:usr.email}))
+    
+//     let {username, email} = req.query
+//     if(username) 
+//         filtered = filtered.filter(usr => usr.username
+//                                             .toUpperCase()
+//                                             .includes(username.toUpperCase()) )
+//     if(email) 
+//         filtered = filtered.filter(usr => usr.email.toUpperCase().includes(email.toUpperCase()) )
+    
+//     res.send(filtered)
+// })
+
+router.get('/',validateAdmin, async (req,res)=>{
     let isAdmin = req.isAdmin;
-    let users  = await User.find({})
-    let filtered = [...users]
-    console.log(filtered);
-    if(!isAdmin)
-      filtered = filtered.map(usr => ({id: usr.id, username: usr.username,email:usr.email}))
-    
     let {username, email} = req.query
+    let filtros = {}
     if(username) 
-        filtered = filtered.filter(usr => usr.username
-                                            .toUpperCase()
-                                            .includes(username.toUpperCase()) )
+        filtros.username = new RegExp(username,'i')
+
     if(email) 
-        filtered = filtered.filter(usr => usr.email.toUpperCase().includes(email.toUpperCase()) )
-    
-    res.send(filtered)
+        filtros.email = new RegExp(email,'i')
+
+    let users  = await User.getUsers(filtros,isAdmin)
+
+    res.send(users)
 })
 
 

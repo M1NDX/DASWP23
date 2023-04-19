@@ -17,16 +17,19 @@ let userSchema =  mongoose.Schema({
     }
 })
 
-let User = mongoose.model('user',userSchema)
-
-async function getUsers(filtros={}, isAdmin=false){
+//User.getUsers({},true)
+userSchema.statics.getUsers =   async (filtros={}, isAdmin=false)=>{
     let projection = {_id:0, username:1, email:1}
     if (isAdmin) projection.password = 1
     let docs = await User.find(filtros, projection)
     console.log(docs);
+    return docs;
 }
 
-getUsers({},true)
+let User = mongoose.model('user',userSchema)
+
+
+User.getUsers({},true)
 
 async function addUser(newUser){
     //aquí podemos validar el newUser

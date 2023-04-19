@@ -20,6 +20,6 @@ app.get('/',(req,res)=>{
 })
 app.use('/api/users', userRoute);
 
-app.listen(port, () => console.log(`running  http://127.0.0.1:${port}`) )
+app.listen(port, () => console.log(`running  http://localhost:${port}`) )
 
 
