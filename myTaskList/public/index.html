@@ -11,7 +11,7 @@
   </head>
   <body>
       <h1>TASK-LIST APP</h1>
-
+      <div class="container">
       <div class="row">
         <div class="col">
           <div class="form-group">
@@ -28,6 +28,33 @@
             <input type="text" class="form-control" onchange="filtrarLista()" id="searchValue" aria-describedby="helpId" placeholder="valor a buscar">
           </div>
         </div>
+      </div>
+
+      <form onsubmit="saveTask()">
+     
+          <div class="form-group">
+            <label for="titulo">Título</label>
+            <input type="text" class="form-control" required name="titulo" id="titulo" aria-describedby="helpId" placeholder="pon el titulo">
+          </div>
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <input type="text" class="form-control" value="" name="descripcion" id="descripcion" aria-describedby="helpId" placeholder="pon la descripción">
+          </div>
+          <div class="form-group">
+            <label for="fechaLimite">Fecha Límite</label>
+            <input type="date" class="form-control" required  name="fechaLimite" id="fechaLimite" aria-describedby="helpId" placeholder="pon el Fecha Limite">
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input"  name="completado" id="completado" value="checkedValue" >
+              Completado
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Guardar</button>
+
+      </form>  
+
       </div>
 
       <table class="table">
@@ -83,6 +110,37 @@
                                               b.fechaLimite-a.fechaLimite
                             )
           showData(tasks);
+
+
+        }
+
+        async function saveTask(){
+          event.preventDefault()
+
+          let titulo = document.querySelector("#titulo").value;
+          let descripcion = document.querySelector("#descripcion").value;
+          let fechaLimite = Number(document.querySelector("#fechaLimite").value.split("-").join(""));
+          let completado = document.querySelector("#completado").checked;
+
+          let newTask = {titulo, descripcion, fechaLimite, completado}
+          console.log(newTask);
+
+          let resp = await fetch("/api/tasks",{
+            method: "POST",
+            headers: {
+              "content-type":"application/json"
+            },
+            body: JSON.stringify(newTask)
+          })
+
+          let data = await resp.json()
+
+          if (resp.status == 201){
+            alert("tarea registrada")
+            loadTasks();
+          }else{
+            alert(data.error)
+          }
 
         }
 

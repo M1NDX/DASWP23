@@ -5,6 +5,7 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 //midleware para leer el body en el post y put como req.body
 app.use(express.json())
 

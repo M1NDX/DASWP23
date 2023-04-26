@@ -1,0 +1,15 @@
+@host = http://localhost:3000
+
+###
+GET {{host}}/api/tasks
+
+###
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{
+    "titulo": "entregar backend",
+    "descripcion": "hacer api del proyecto",
+    "fechaLimite": 20230429,
+    "completado": false
+}
