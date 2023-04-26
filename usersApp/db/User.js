@@ -65,6 +65,7 @@ userSchema.statics.deleteUser = async (email)=>{
 
 
 
+
 let User = mongoose.model('user',userSchema)
 
 
