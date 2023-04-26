@@ -57,11 +57,11 @@ taskSchema.statics.borrarTarea= async(uid) => {
 
 const Tarea  = mongoose.model('Tarea', taskSchema)
 
-// Tarea.crearTarea({uid:"1234",
-//                              titulo: "Entrega de avance proyecto DASW",
-//                              descripcion:"DASW",
-//                              fechaLimite:20230424})
-//Tarea.getTareas()
-Tarea.getTareaById('1234')
+// Tarea.crearTarea({uid:"12345",
+//                              titulo: "Entrega 2  de avance proyecto DASW",
+//                              descripcion:"DASW2",
+//                              fechaLimite:20230426})
+// Tarea.getTareas()
+// Tarea.getTareaById('1234')
 
 module.exports = {Tarea}

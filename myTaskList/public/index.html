@@ -12,12 +12,30 @@
   <body>
       <h1>TASK-LIST APP</h1>
 
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <select class="form-control" name="" id="atributoSelect">
+              <option value="">selecciona</option>
+              <option value="titulo">título</option>
+              <option value="descripcion">descripción</option>
+              <option value="completado">completado</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <input type="text" class="form-control" onchange="filtrarLista()" id="searchValue" aria-describedby="helpId" placeholder="valor a buscar">
+          </div>
+        </div>
+      </div>
+
       <table class="table">
         <thead>
             <th>uid</th>
             <th>titulo</th>
             <th>descripción</th>
-            <th>fecha limite</th>
+            <th onclick="sortByDate()">fecha límite</th>
             <th>completado</th>
         </thead>
         <tbody id="taskList">
@@ -26,11 +44,19 @@
       </table>
 
       <script>
+        let tasks=[]
+        // let filtrado = []
+        let sortMode="";
         let taskList = document.getElementById("taskList");
-        async function loadTasks(){
-            let resp = await fetch('/api/tasks');
-            let tasks = await resp.json();
-            taskList.innerHTML = tasks.map(tsk => `
+        async function loadTasks(queryParams=''){
+            let resp = await fetch('/api/tasks'+queryParams);
+            tasks = await resp.json();
+            // filtrado = [...tasks];
+            showData(tasks);
+        }
+
+        function showData(lista){
+          taskList.innerHTML = lista.map(tsk => `
             <tr>
                 <td>${tsk.uid}</td>
                 <td>${tsk.titulo}</td>
@@ -39,6 +65,24 @@
                 <td>${tsk.completado}</td>
             </tr>
             `).join("")
+        }
+
+        function filtrarLista(){
+          let atributoSelect = document.querySelector("#atributoSelect")
+          let searchValue = document.querySelector("#searchValue")
+          console.log(atributoSelect.value);
+          console.log(searchValue.value);
+          if(atributoSelect.value != "")
+            loadTasks("?"+atributoSelect.value+"="+searchValue.value)
+
+        }
+
+        function sortByDate(){
+          sortMode = (sortMode=="" || sortMode=="desc")? "asc" : "desc";
+          tasks.sort((a,b)=> sortMode=="asc"? a.fechaLimite-b.fechaLimite: 
+                                              b.fechaLimite-a.fechaLimite
+                            )
+          showData(tasks);
 
         }
 
