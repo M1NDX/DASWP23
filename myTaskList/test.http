@@ -13,3 +13,12 @@ Content-Type: application/json
     "fechaLimite": 20230429,
     "completado": false
 }
+
+####
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+    "email":"test1@sdas",
+    "password": "23455"
+}

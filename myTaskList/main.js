@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path')
 const taskRouter = require('./routes/tasks-route.js')
+const authRouter = require('./routes/auth-route.js')
+
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -11,5 +13,6 @@ app.use(express.json())
 
 // rutas a tasks
 app.use('/api/tasks',taskRouter)
+app.use('/api/login',authRouter)
 
 app.listen(port, ()=>console.log("running on port"+ port))
