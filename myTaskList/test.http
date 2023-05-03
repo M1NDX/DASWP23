@@ -1,7 +1,9 @@
 @host = http://localhost:3000
+@token= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxQHNkYXMiLCJpYXQiOjE2ODMxMzg5MjcsImV4cCI6MTY4MzEzOTEwN30.eRcNWBOEWSC-SlfdZA3U86ZzNmDiJwV9IaC2KczI-oU
 
 ###
 GET {{host}}/api/tasks
+x-token: {{token}}
 
 ###
 POST {{host}}/api/tasks

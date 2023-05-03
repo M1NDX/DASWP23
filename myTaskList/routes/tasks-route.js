@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const {validarBodyTarea} = require('../middlewares/validarDatos.js');
+const {validarBodyTarea, validarToken} = require('../middlewares/validarDatos.js');
 const {Tarea} = require('../db/Tarea.js');
 const nanoid = require('nanoid')
 
-router.get('/',async (req,res)=>{
+router.get('/',validarToken, async (req,res)=>{
     let filtro = {}
     let {titulo, descripcion, completado} = req.query;
     console.log("completado", completado);
@@ -20,7 +20,7 @@ router.get('/',async (req,res)=>{
     res.send(tasks)
 })
 
-router.post('/', validarBodyTarea, async (req, res) => {
+router.post('/', validarToken, validarBodyTarea, async (req, res) => {
     let {titulo, descripcion, fechaLimite,completado } = req.body;
     console.log(nanoid.nanoid());
     let newDoc = await Tarea.crearTarea({uid:nanoid.nanoid(),titulo, descripcion, fechaLimite,completado })

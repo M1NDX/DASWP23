@@ -21,7 +21,7 @@ let userSchema =  mongoose.Schema({
 
 //User.getUsers({},true)
 userSchema.statics.getUsers =   async (filtros={}, isAdmin=false)=>{
-    let projection = {_id:0, username:1, email:1, password:1,}
+    let projection = {_id:0, username:1, email:1}
     let skip=0
     let limit = 1000
     
